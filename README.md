@@ -5,6 +5,7 @@
 
 * [Overview](#pkg-overview)
 * [Index](#pkg-index)
+* [Examples](#pkg-examples)
 
 ## <a name="pkg-overview">Overview</a>
 Package gotlsconfig makes it easy to get a secure *tls.Config for testing and
@@ -13,6 +14,30 @@ This mitigates the usage of static private keys in go code.
 
 Its better to use self singed certificates instead of doing plain traffic!
 
+
+##### Example :
+``` go
+config := gotlsconfig.New("localhost")
+
+l, err := net.Listen("tcp", ":1234")
+if err != nil {
+    log.Fatal(err)
+}
+defer l.Close()
+
+for {
+    connp, err := l.Accept()
+    if err != nil {
+        log.Fatal(err)
+    }
+    conn := tls.Server(connp, config)
+    go func(c net.Conn) {
+        io.Copy(os.Stdout, c)
+        fmt.Println()
+        c.Close()
+    }(conn)
+}
+```
 
 
 
@@ -23,6 +48,8 @@ Its better to use self singed certificates instead of doing plain traffic!
 * [type KeyType](#KeyType)
 * [type SelfSignedConfig](#SelfSignedConfig)
 
+#### <a name="pkg-examples">Examples</a>
+* [Package](#example-)
 
 #### <a name="pkg-files">Package files</a>
 [doc.go](https://github.com/mschneider82/gotlsconfig/doc.go) [gotlsconfig.go](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go) [selfsigned.go](https://github.com/mschneider82/gotlsconfig/selfsigned.go)

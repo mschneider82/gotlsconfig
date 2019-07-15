@@ -17,8 +17,10 @@ Its better to use Self Singed Certificates instead of doing plain traffic!
 
 
 ## <a name="pkg-index">Index</a>
-* [func New(names ...string) *tls.Config](#New)
+* [Constants](#pkg-constants)
+* [func New(subjectNames ...string) *tls.Config](#New)
 * [func NewWithConfig(ssconfig SelfSignedConfig) (*tls.Config, error)](#NewWithConfig)
+* [type KeyType](#KeyType)
 * [type SelfSignedConfig](#SelfSignedConfig)
 
 
@@ -26,18 +28,30 @@ Its better to use Self Singed Certificates instead of doing plain traffic!
 [doc.go](https://github.com/mschneider82/gotlsconfig/doc.go) [gotlsconfig.go](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go) [selfsigned.go](https://github.com/mschneider82/gotlsconfig/selfsigned.go)
 
 
-
-
-
-## <a name="New">func</a> [New](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go?s=161:198#L11)
+## <a name="pkg-constants">Constants</a>
 ``` go
-func New(names ...string) *tls.Config
+const (
+    EC256   = KeyType("P256")
+    EC384   = KeyType("P384")
+    RSA2048 = KeyType("2048")
+    RSA4096 = KeyType("4096")
+    RSA8192 = KeyType("8192")
+)
 ```
-New generates a new Selfsinged certificate with default settings
+Constants for all key types we support.
 
 
 
-## <a name="NewWithConfig">func</a> [NewWithConfig](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go?s=564:630#L25)
+
+## <a name="New">func</a> [New](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go?s=147:191#L9)
+``` go
+func New(subjectNames ...string) *tls.Config
+```
+New generates a new selfsinged rsa4096 certificate for subjectNames with 10 years expiry
+
+
+
+## <a name="NewWithConfig">func</a> [NewWithConfig](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go?s=567:633#L23)
 ``` go
 func NewWithConfig(ssconfig SelfSignedConfig) (*tls.Config, error)
 ```
@@ -46,17 +60,30 @@ NewWithConfig gets a new tls.Config with custom settings
 
 
 
-## <a name="SelfSignedConfig">type</a> [SelfSignedConfig](https://github.com/mschneider82/gotlsconfig/selfsigned.go?s=287:384#L21)
+## <a name="KeyType">type</a> [KeyType](https://github.com/mschneider82/gotlsconfig/selfsigned.go?s=380:399#L27)
+``` go
+type KeyType string
+```
+
+
+
+
+
+
+
+
+
+## <a name="SelfSignedConfig">type</a> [SelfSignedConfig](https://github.com/mschneider82/gotlsconfig/selfsigned.go?s=459:610#L30)
 ``` go
 type SelfSignedConfig struct {
-    SAN     []string
-    KeyType certcrypto.KeyType
-    Expire  time.Time
+    SAN          []string // Subject Alternative Names
+    KeyType      KeyType
+    Expire       time.Time
+    Organization string
 }
 
 ```
 SelfSignedConfig configures a self-signed certificate.
-
 
 
 

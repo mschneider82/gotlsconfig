@@ -13,15 +13,25 @@ import (
 	"net"
 	"strings"
 	"time"
-
-	"github.com/xenolf/lego/certcrypto"
 )
+
+// Constants for all key types we support.
+const (
+	EC256   = KeyType("P256")
+	EC384   = KeyType("P384")
+	RSA2048 = KeyType("2048")
+	RSA4096 = KeyType("4096")
+	RSA8192 = KeyType("8192")
+)
+
+type KeyType string
 
 // SelfSignedConfig configures a self-signed certificate.
 type SelfSignedConfig struct {
-	SAN     []string
-	KeyType certcrypto.KeyType
-	Expire  time.Time
+	SAN          []string // Subject Alternative Names
+	KeyType      KeyType
+	Expire       time.Time
+	Organization string
 }
 
 // newSelfSignedCertificate returns a new self-signed certificate.
@@ -30,15 +40,15 @@ func newSelfSignedCertificate(ssconfig SelfSignedConfig) (tls.Certificate, error
 	var privKey interface{}
 	var err error
 	switch ssconfig.KeyType {
-	case "", certcrypto.EC256:
+	case "", EC256:
 		privKey, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	case certcrypto.EC384:
+	case EC384:
 		privKey, err = ecdsa.GenerateKey(elliptic.P384(), rand.Reader)
-	case certcrypto.RSA2048:
+	case RSA2048:
 		privKey, err = rsa.GenerateKey(rand.Reader, 2048)
-	case certcrypto.RSA4096:
+	case RSA4096:
 		privKey, err = rsa.GenerateKey(rand.Reader, 4096)
-	case certcrypto.RSA8192:
+	case RSA8192:
 		privKey, err = rsa.GenerateKey(rand.Reader, 8192)
 	default:
 		return tls.Certificate{}, fmt.Errorf("cannot generate private key; unknown key type %v", ssconfig.KeyType)
@@ -58,9 +68,12 @@ func newSelfSignedCertificate(ssconfig SelfSignedConfig) (tls.Certificate, error
 	if err != nil {
 		return tls.Certificate{}, fmt.Errorf("failed to generate serial number: %v", err)
 	}
+	if ssconfig.Organization == "" {
+		ssconfig.Organization = "github.com/mschneider82/gotlsconfig self-signed"
+	}
 	cert := &x509.Certificate{
 		SerialNumber: serialNumber,
-		Subject:      pkix.Name{Organization: []string{"GoTLSConfig Self-Signed"}},
+		Subject:      pkix.Name{Organization: []string{ssconfig.Organization}},
 		NotBefore:    notBefore,
 		NotAfter:     notAfter,
 		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,

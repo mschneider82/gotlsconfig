@@ -3,18 +3,16 @@ package gotlsconfig
 import (
 	"crypto/tls"
 	"time"
-
-	"github.com/xenolf/lego/certcrypto"
 )
 
-// New generates a new Selfsinged certificate with default settings
-func New(names ...string) *tls.Config {
-	if len(names) == 0 {
-		names = []string{"localhost"}
+// New generates a new selfsinged rsa4096 certificate for subjectNames with 10 years expiry
+func New(subjectNames ...string) *tls.Config {
+	if len(subjectNames) == 0 {
+		subjectNames = []string{"localhost"}
 	}
 	ssconfig := SelfSignedConfig{
-		SAN:     names,
-		KeyType: certcrypto.RSA4096,
+		SAN:     subjectNames,
+		KeyType: RSA4096,
 		Expire:  time.Now().Add(10 * time.Hour * 24 * 365),
 	}
 	cert, _ := newSelfSignedCertificate(ssconfig)

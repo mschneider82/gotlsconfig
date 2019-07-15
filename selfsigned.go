@@ -60,7 +60,7 @@ func newSelfSignedCertificate(ssconfig SelfSignedConfig) (tls.Certificate, error
 	}
 	cert := &x509.Certificate{
 		SerialNumber: serialNumber,
-		Subject:      pkix.Name{Organization: []string{"CertMagic Self-Signed"}},
+		Subject:      pkix.Name{Organization: []string{"GoTLSConfig Self-Signed"}},
 		NotBefore:    notBefore,
 		NotAfter:     notAfter,
 		KeyUsage:     x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,

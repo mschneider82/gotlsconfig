@@ -7,6 +7,12 @@
 * [Index](#pkg-index)
 
 ## <a name="pkg-overview">Overview</a>
+Package gotlsconfig makes it easy to get secure tlsconfig for testing and
+development. It generates on the fly pub/private certificates.
+This mitigates the usage of static private keys in go code.
+
+Its better to use Self Singed Certificates instead of doing plain traffic!
+
 
 
 
@@ -17,7 +23,7 @@
 
 
 #### <a name="pkg-files">Package files</a>
-[gotlsconfig.go](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go) [selfsigned.go](https://github.com/mschneider82/gotlsconfig/selfsigned.go)
+[doc.go](https://github.com/mschneider82/gotlsconfig/doc.go) [gotlsconfig.go](https://github.com/mschneider82/gotlsconfig/gotlsconfig.go) [selfsigned.go](https://github.com/mschneider82/gotlsconfig/selfsigned.go)
 
 
 
